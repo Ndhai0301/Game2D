@@ -15,12 +15,14 @@ public class GamePanel extends JPanel implements Runnable {
     final int screenWidth = tileSize * maxScreenCol; // 768 pixels
     final int screenHeight = tileSize * maxScreenRow; // 576 pixels
 
+    int FPS = 60;
+
     KeyHandler keyH = new KeyHandler();
     Thread gameThread;
 
     int playerX = 100;
     int playerY = 100;
-    int playerSpeed = 4;
+    int playerSpeed = 1;
     
     public GamePanel(){
         this.setPreferredSize(new Dimension(screenWidth,screenHeight));
@@ -30,11 +32,54 @@ public class GamePanel extends JPanel implements Runnable {
         this.setFocusable(true);
     }
     @Override
-    public void run(){
+    /*public void run(){
+        double drawInterval = 100000000/FPS;
+        double nextDrawTime = System.nanoTime() + drawInterval;
         while (gameThread != null){
-          System.out.println("The gameloop is running");  
-          update();
-          repaint();
+           
+            update();
+            repaint();
+
+            try {
+                double remaintime = nextDrawTime - System.nanoTime();
+                remaintime = remaintime/1000000;
+                if (remaintime < 0) {
+                    remaintime = 0;
+                }
+                Thread.sleep((long)remaintime);
+                nextDrawTime += drawInterval;
+            } catch(InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }/* */
+
+    public void run(){
+        double drawInterval = 100000000/FPS;
+        double delta = 0;
+        long lastTime = System.nanoTime();
+        long currentTime;
+        long timer = 0;
+        int drawCount = 0;  
+        while (gameThread != null){
+            currentTime = System.nanoTime();
+            delta += (currentTime - lastTime)/drawInterval;
+            timer += (currentTime - lastTime);
+
+            lastTime = currentTime;
+
+            if (delta >= 1){
+                update();
+                repaint();
+                delta --; 
+                drawCount ++;
+            }
+            if (timer> 100000000){
+                System.out.println("FPS:" + drawCount);
+                timer = 0;
+                drawCount = 0;
+            }
         }
     }
     public void startGameThread(){
@@ -49,7 +94,7 @@ public class GamePanel extends JPanel implements Runnable {
         }   else if(keyH.rightPressed == true){
             playerX += playerSpeed;
         }   else if (keyH.leftPressed == true){
-            playerY -= playerSpeed;
+            playerX -= playerSpeed;
         }
     }
     public void paintComponent(Graphics g){
