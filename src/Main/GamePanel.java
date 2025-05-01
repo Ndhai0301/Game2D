@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import javax.swing.JPanel;
+import opject.superopject;
 import tile.TileManager;
 
 public class GamePanel extends JPanel implements Runnable {
@@ -27,8 +28,10 @@ public class GamePanel extends JPanel implements Runnable {
     TileManager tileM = new TileManager(this);
     KeyHandler keyH = new KeyHandler();
     Thread gameThread;
+    public AssetSetter aSetter = new AssetSetter(this);
     public CollisionChecker cChecker = new CollisionChecker(this);
     public Player player = new Player(this,keyH);
+    public superopject obj[] = new superopject[10]; 
 
    
     public GamePanel(){
@@ -38,29 +41,10 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(keyH);
         this.setFocusable(true);
     }
-    @Override
-    /*public void run(){
-        double drawInterval = 100000000/FPS;
-        double nextDrawTime = System.nanoTime() + drawInterval;
-        while (gameThread != null){
-           
-            update();
-            repaint();
 
-            try {
-                double remaintime = nextDrawTime - System.nanoTime();
-                remaintime = remaintime/1000000;
-                if (remaintime < 0) {
-                    remaintime = 0;
-                }
-                Thread.sleep((long)remaintime);
-                nextDrawTime += drawInterval;
-            } catch(InterruptedException e) {
-                e.printStackTrace();
-            }
-
-        }
-    }/* */
+    public void setupGame(){
+        aSetter.setObject();
+    }
 
     public void run(){
         double drawInterval = 100000000/FPS;
@@ -100,6 +84,11 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D)g;
         tileM.draw(g2);
+        for (int i = 0 ; i < obj.length; i++){
+            if(obj[i] != null){
+                obj[i].draw(g2,this);
+            }
+        }
         player.draw(g2);
         g2.dispose();
     }
