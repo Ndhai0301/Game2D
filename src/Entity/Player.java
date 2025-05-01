@@ -2,22 +2,29 @@ package Entity;
 import Main.GamePanel;
 import Main.KeyHandler;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.ImageIO;
-public class Player extends entity {
+public class Player extends Entity {
     GamePanel gp;
     KeyHandler keyH;
+    public final int screenX;
+    public final int screenY; 
 
     public Player(GamePanel gp, KeyHandler keyH){
         this.gp = gp;
         this.keyH = keyH;
+        screenX = gp.screenWidth/2 - (gp.tileSize/2);
+        screenY = gp.screenHeight/2- (gp.tileSize/2);
+        
+        solidArea = new Rectangle(8,16,32,32);
         setDefaultCloseOperation();
         getPlayerImage();
     }
     public void setDefaultCloseOperation(){
-        x = 100;
-        y = 100;
+        worldX = gp.tileSize * 25;
+        worldY = gp.tileSize * 25;
         speed = 1;
         direction = "down";
     }
@@ -36,18 +43,31 @@ public class Player extends entity {
         }
     }
     public void update(){
+        if (keyH.upPressed == true || keyH.downpressed == true || keyH.leftPressed == true || keyH.rightPressed == true){
         if (keyH.upPressed == true){
             direction = "up";
-            y -= speed;
+            
         } else if (keyH.downpressed == true){
             direction = "down";
-            y += speed;
+            
         }   else if(keyH.rightPressed == true){
             direction = "right";
-            x += speed;
+           
         }   else if (keyH.leftPressed == true){
             direction = "left";
-            x -= speed;
+            
+        }
+        
+        collisionOn = false;
+        gp.cChecker.checkTile(this);
+
+        if (collisionOn == false){
+            switch(direction){
+                case "up":  worldY -= speed;break;
+                case "down": worldY += speed;break;
+                case "left": worldX -= speed;break;
+                case "right": worldX += speed;break;
+            }
         }
         spriteCounter ++; 
         if (spriteCounter > 50 ){
@@ -59,6 +79,7 @@ public class Player extends entity {
             } 
             spriteCounter =0;
         }
+    }
     }
     public void draw(Graphics2D g2){
         BufferedImage image = null;
@@ -93,6 +114,6 @@ public class Player extends entity {
             }    
                 break;
         }
-    g2.drawImage(image, x, y, gp.tileSize,gp.tileSize,null);
+    g2.drawImage(image, screenX, screenY, gp.tileSize,gp.tileSize,null);
     }
 }
