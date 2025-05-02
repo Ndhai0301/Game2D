@@ -1,8 +1,6 @@
 package Main;
 
-import opject.OBJ_Chest;
-import opject.OBJ_Key;
-import opject.*;
+import object.*;
 
 public class AssetSetter {
     GamePanel gp; 
@@ -32,7 +30,7 @@ public class AssetSetter {
         gp.obj[4].worldY = 10 * gp.tileSize;
 
         gp.obj[5] = new OBJ_Chest();
-        gp.obj[5].worldX = 12 * gp.tileSize;
+        gp.obj[5].worldX = 20 * gp.tileSize;
         gp.obj[5].worldY = 12 * gp.tileSize;
 
         gp.obj[6] = new OBJ_Boots();

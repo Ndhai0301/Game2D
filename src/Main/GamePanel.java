@@ -6,7 +6,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import javax.swing.JPanel;
-import opject.superopject;
+import object.superopject;
 import tile.TileManager;
 
 public class GamePanel extends JPanel implements Runnable {
@@ -27,11 +27,12 @@ public class GamePanel extends JPanel implements Runnable {
 
     TileManager tileM = new TileManager(this);
     KeyHandler keyH = new KeyHandler();
-    Sound sound = new Sound();
+    
     public AssetSetter aSetter = new AssetSetter(this);
     public CollisionChecker cChecker = new CollisionChecker(this);
     public Player player = new Player(this,keyH);
     public superopject obj[] = new superopject[10]; 
+    public UI ui = new UI(this);
     Thread gameThread;
    
     public GamePanel(){
@@ -44,7 +45,6 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void setupGame(){
         aSetter.setObject();
-        playMusic(0);
     }
 
     public void run(){
@@ -91,19 +91,7 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
         player.draw(g2);
+        ui.draw(g2);
         g2.dispose();
-    }
-    public void playMusic(int i){
-        sound.setFile(i);
-        sound.play();
-        sound.loop();
-
-    }
-    public void stopMusic(){
-        sound.stop();
-    }
-    public void playSE(int i){
-        sound.setFile(i);
-        sound.play();
     }
 }
